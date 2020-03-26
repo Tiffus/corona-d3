@@ -1,0 +1,88 @@
+html,
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    padding-bottom: 50px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    text-transform: capitalize;
+}
+
+.btnContainer,
+.scaleContainer {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    margin: 0 10px;
+}
+
+.line {
+    stroke-width: 5px;
+    transition: all 0.5s;
+    transition: d 1s;
+}
+
+.line.highlight {
+    stroke-width: 7px;
+}
+
+.line.dimmed {
+    stroke-width: 1px;
+    stroke: grey!important;
+    opacity: 0.2;
+}
+
+.text {
+    fill: black;
+    font-family: "verdana";
+    font-size: 10px;
+    text-anchor: end;
+    pointer-events: none;
+    transition: all 0.5s;
+}
+
+.text.dimmed {
+    fill: grey;
+    opacity: 0.2;
+    transition: all 0.2s;
+}
+
+.subtitle {
+    font-weight: 800;
+}
+
+.subtitle {
+    text-align: center;
+}
+
+.credits,
+.lastupdate {
+    text-align: right;
+    margin-bottom: 0;
+    line-height: 17px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.bootstrap-table .fixed-table-toolbar .bs-bars,
+.bootstrap-table .fixed-table-toolbar .columns,
+.bootstrap-table .fixed-table-toolbar .search {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    float: inherit;
+    width: 100%;
+}
