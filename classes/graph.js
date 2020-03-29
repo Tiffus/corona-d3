@@ -75,17 +75,23 @@ class Graph {
         if (this.isLinear) {
             this.scaleY = d3.scaleLinear()
                 .range([this.graphHeight, 0])
-                .domain([0, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]);
+                .domain([0, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).nice();
+
+            //Create axis
+            this.svgYaxis.transition().duration(1000)
+                .call(d3.axisLeft(this.scaleY).tickFormat(d3.format("")));
         } else {
 
             this.scaleY = d3.scaleLog().base(10)
                 .range([this.graphHeight, 0])
-                .domain([1, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true);
+                .domain([1, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true).nice();
+
+            //Create axis
+            this.svgYaxis.transition().duration(1000)
+                .call(d3.axisLeft(this.scaleY).ticks(4).tickFormat(d3.format("")));
         }
 
-        //Create axis
-        this.svgYaxis.transition().duration(1000)
-            .call(d3.axisLeft(this.scaleY).ticks(5).tickFormat(d3.format("")));
+
 
         //Lignes horizontales
         this.svgYaxis.transition().duration(1000)
