@@ -91,8 +91,6 @@ class Graph {
                 .call(d3.axisLeft(this.scaleY).ticks(5).tickFormat(d3.format("")));
         }
 
-
-
         //Lignes horizontales
         this.svgYaxis.transition().duration(1000)
             .call(g => g.selectAll(".tick line")
@@ -116,7 +114,6 @@ class Graph {
             this.updateGraph(dataParser, currentState);
         }
     }
-
 
     //Dessine une première fois
     drawGraph(dataParser, currentState) {

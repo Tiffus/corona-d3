@@ -1,6 +1,7 @@
 class Main {
 
     static get BASE_URL() { return "https://pomber.github.io/covid19/timeseries.json" };
+    static get BASE_URL_POP() { return "https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-population.json" };
     static get DEFAULT_MESSAGE() { return "Move your mouse over a line to see infos." };
 
     buttons;
@@ -8,6 +9,9 @@ class Main {
 
     svgWidth;
     svgHeight;
+
+    rawData;
+    popData;
 
     dataParser;
     graph;
@@ -45,17 +49,25 @@ class Main {
     }
 
     loadData(url) {
-        d3.json(url).then(data => this.onLoadFileComplete(data));
+        d3.json(url).then(data => {
+            this.rawData = data;
+            this.loadDataPop()
+        });
     }
 
     /*
     Après le chargement on fait les calculs nécessaires sur les données pour avoir un jeu propre
     */
-    onLoadFileComplete(data) {
-        this.rawData = data;
+    loadDataPop() {
+        d3.json(Main.BASE_URL_POP).then(data => {
+            this.popData = data;
+            this.begin();
+        });
+    }
 
+    begin() {
         //ParseData
-        this.dataParser = new DataParser(data);
+        this.dataParser = new DataParser(this.rawData, this.popData);
         this.dataParser.addEventListener(DataParser.eventParsingDone, this.onDataParsed.bind(this));
         this.dataParser.parseData();
     }

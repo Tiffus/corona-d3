@@ -3,6 +3,7 @@ class Table {
     dataParser;
     container;
     table;
+
     dataTable;
 
     constructor(dataParser, container) {
@@ -19,11 +20,16 @@ class Table {
 
         this.dataTable = [];
 
-        dataParser.cumulativeData.series.forEach(x => {
+        dataParser.cumulativeData.series.forEach((x, i) => {
             const data = {
+                index: i,
                 countryName: x.name,
                 countryNumber: x[currentState][x[currentState].length - 1]
             };
+
+            if (currentState.substr(0, 7) == "percent") {
+                data.countryNumber = String(data.countryNumber) + " %";
+            }
 
             this.dataTable.push(data);
         })
