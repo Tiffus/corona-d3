@@ -27,20 +27,25 @@ class Main {
         this.loadData(Main.BASE_URL);
     }
 
-    loadData(url) {
-        d3.json(url).then(data => this.onLoadFileComplete(data));
-    }
-
     configureDOM() {
-        //Taille du svg
-        this.svgWidth = document.querySelector(".graph").offsetWidth;
 
-        this.svgHeight = 700;
+        this.calculateSize();
 
         //Définition du svg de base avec ses marges
         this.svg = d3.select(".graph").append("svg")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight)
+    }
+
+    calculateSize() {
+        //Taille du svg
+        this.svgWidth = document.querySelector(".graph").offsetWidth;
+        this.svgHeight = 700;
+
+    }
+
+    loadData(url) {
+        d3.json(url).then(data => this.onLoadFileComplete(data));
     }
 
     /*
@@ -112,7 +117,7 @@ class Main {
         });
 
         //Buttons
-        this.buttons = document.querySelectorAll(".btnCSV");
+        this.buttons = document.querySelectorAll(".btnState");
         this.buttons.forEach(b => b.addEventListener("click", this.onClickButton.bind(this)));
 
         //Buttons scale
@@ -122,6 +127,8 @@ class Main {
         //Search
         const search = document.querySelector(".search-input");
         search.addEventListener("keyup", this.onSearchChange.bind(this));
+
+        window.addEventListener("resize", this.onResize.bind(this));
     }
 
     onSearchChange(e) {
@@ -198,7 +205,7 @@ class Main {
 
         if (!e.currentTarget.classList.contains("dimmed")) {
             const name = document.querySelector(".subtitle");
-            name.innerHTML = `${e.target.dataset.name} : ${e.target.dataset.max} people ${this.graph.state} since the beginning of the COVID-19 pandemy`;
+            name.innerHTML = `${e.target.dataset.name} : ${e.target.dataset.last} people ${this.graph.state} since the beginning of the COVID-19 pandemy`;
         }
 
         if (e.currentTarget.dataset.event == "true") {
@@ -238,5 +245,20 @@ class Main {
             t.classList.remove("highlight");
             t.classList.remove("dimmed");
         });
+    }
+
+
+    onResize() {
+
+        this.calculateSize();
+
+        this.svg = d3.select(".graph svg")
+            .attr("width", this.svgWidth)
+            .attr("height", this.svgHeight)
+
+        this.graph.resize(this.svg, this.svgWidth, this.svgHeight);
+
+        //Graph
+        this.graph.configureGraph(this.dataParser, this.currentState, true);
     }
 }

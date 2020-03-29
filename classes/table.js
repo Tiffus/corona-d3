@@ -2,17 +2,31 @@ class Table {
 
     dataParser;
     container;
+    table;
+    dataTable;
 
     constructor(dataParser, container) {
 
         this.dataParser = dataParser;
         this.container = d3.select(container);
+        this.table = $("#corona-table");
 
         console.log("new table created");
     }
 
     //Configure d3 pour l'affichage echelle etc
     configureTable(dataParser, currentState, isUpdate) {
+
+        this.dataTable = [];
+
+        dataParser.cumulativeData.series.forEach(x => {
+            const data = {
+                countryName: x.name,
+                countryNumber: x[currentState][x[currentState].length - 1]
+            };
+
+            this.dataTable.push(data);
+        })
 
         if (!isUpdate) {
             this.drawTable(dataParser, currentState);
@@ -25,20 +39,7 @@ class Table {
     drawTable(dataParser, currentState) {
         console.log("draw table");
 
-        let dataTable = [];
-
-        dataParser.cumulativeData.series.forEach(x => {
-            const data = {
-                countryName: x.name,
-                countryNumber: d3.max(x[currentState])
-            };
-
-            dataTable.push(data);
-        })
-
-        let table = $("#corona-table");
-
-        table.bootstrapTable({
+        this.table.bootstrapTable({
             search: true,
             sortName: 'countryNumber',
             sortOrder: 'desc',
@@ -49,26 +50,13 @@ class Table {
                 field: "countryNumber",
                 sortable: true
             }],
-            data: dataTable
+            data: this.dataTable
         });
     }
 
     //Mise à jour du graphique
     updateTable(dataParser, currentState) {
 
-        let dataTable = [];
-
-        dataParser.cumulativeData.series.forEach(x => {
-            const data = {
-                countryName: x.name,
-                countryNumber: d3.max(x[currentState])
-            };
-
-            dataTable.push(data);
-        })
-
-        let table = $("#corona-table");
-
-        table.bootstrapTable('load', dataTable);
+        this.table.bootstrapTable('load', this.dataTable);
     }
 }

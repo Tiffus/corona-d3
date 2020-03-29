@@ -48,18 +48,18 @@ class Graph {
             .attr("class", "graphContainer")
             .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        this.linesContainer = container.append("g")
-            .attr("class", "linesContainer")
-            .attr("fill", "none");
+        this.svgXaxis = container.append("g")
+            .attr("class", "svgXaxis")
+            .attr("class", "xaxis")
+            .attr("transform", `translate(0, ${this.graphHeight})`);
 
         this.svgYaxis = container.append("g")
             .attr("class", "svgYaxis")
             .attr("class", "yaxis");
 
-        this.svgXaxis = container.append("g")
-            .attr("class", "svgXaxis")
-            .attr("class", "xaxis")
-            .attr("transform", `translate(0, ${this.graphHeight})`);
+        this.linesContainer = container.append("g")
+            .attr("class", "linesContainer")
+            .attr("fill", "none");
     }
 
 
@@ -77,14 +77,15 @@ class Graph {
                 .range([this.graphHeight, 0])
                 .domain([0, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]);
         } else {
-            this.scaleY = d3.scaleLog().base(2)
+
+            this.scaleY = d3.scaleLog().base(10)
                 .range([this.graphHeight, 0])
                 .domain([1, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true);
         }
 
         //Create axis
         this.svgYaxis.transition().duration(1000)
-            .call(d3.axisLeft(this.scaleY))
+            .call(d3.axisLeft(this.scaleY).ticks(5).tickFormat(d3.format("")));
 
         //Lignes horizontales
         this.svgYaxis.transition().duration(1000)
@@ -125,7 +126,7 @@ class Graph {
                 .style("stroke", `hsl(${Math.random() * 360},100%,40%)`)
                 .attr("d", this.valueLine)
                 .attr("data-name", country.name)
-                .attr("data-max", d3.max(country[currentState]))
+                .attr("data-last", d => d[d.length - 1])
                 .attr("data-id", i);
         })
 
@@ -144,15 +145,13 @@ class Graph {
     //Mise à jour du graphique
     updateGraph(dataParser, currentState) {
 
-        console.log("update graph");
-
         //Pour chacun des pays
         dataParser.cumulativeData.series.forEach((country, i) => {
             //On trace la ligne en passant le tableau infected
             this.linesContainer
                 .selectAll(`.line-${i}`)
                 .data([country[currentState]])
-                .attr("data-max", d3.max(country[currentState]))
+                .attr("data-last", d => d[d.length - 1])
                 .attr("d", this.valueLine);
             i++;
         })
@@ -167,5 +166,22 @@ class Graph {
                 .text(t => country.name)
             i++;
         })
+    }
+
+    resize(svg, svgWidth, svgHeight) {
+
+        this.svg = svg;
+        this.svgWidth = svgWidth;
+        this.svgHeight = svgHeight;
+
+        //taille du graph
+        this.graphWidth = svgWidth - this.margin.left - this.margin.right;
+        this.graphHeight = svgHeight - this.margin.top - this.margin.bottom;
+
+        let container = d3.select(".graphContainer")
+            .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
+
+        this.svgXaxis = d3.select(".svgXaxis")
+            .attr("transform", `translate(0, ${this.graphHeight})`);
     }
 }
