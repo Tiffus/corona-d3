@@ -79,12 +79,18 @@ class Graph {
 
             //Create axis
             this.svgYaxis.transition().duration(1000)
-                .call(d3.axisLeft(this.scaleY).tickFormat(d3.format("")));
+                .call(d3.axisLeft(this.scaleY));
         } else {
 
-            this.scaleY = d3.scaleLog().base(10)
-                .range([this.graphHeight, 0])
-                .domain([1, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true).nice();
+            if (currentState.substr(0, 7) == "percent") {
+                this.scaleY = d3.scaleLog().base(10)
+                    .range([this.graphHeight, 0])
+                    .domain([0.01, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true).nice();
+            } else {
+                this.scaleY = d3.scaleLog().base(10)
+                    .range([this.graphHeight, 0])
+                    .domain([1, d3.max(dataParser.cumulativeData.series, d => d3.max(d[currentState]))]).clamp(true).nice();
+            }
 
             //Create axis
             this.svgYaxis.transition().duration(1000)
