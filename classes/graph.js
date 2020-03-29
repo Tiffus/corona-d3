@@ -88,7 +88,7 @@ class Graph {
 
             //Create axis
             this.svgYaxis.transition().duration(1000)
-                .call(d3.axisLeft(this.scaleY).ticks(4).tickFormat(d3.format("")));
+                .call(d3.axisLeft(this.scaleY).ticks(5).tickFormat(d3.format("")));
         }
 
 
